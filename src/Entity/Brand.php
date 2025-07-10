@@ -6,7 +6,6 @@ use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Model; // Ensure you have the correct namespace for your Model entity
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 class Brand
@@ -16,30 +15,32 @@ class Brand
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $CountryOfManufacture = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $ManufactureName = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $Models = null;
-
     /**
      * @var Collection<int, Model>
      */
-    #[ORM\OneToMany(targetEntity: Model::class, mappedBy: 'brand')]
-    private Collection $models;
+    #[ORM\OneToMany(targetEntity: Model::class, mappedBy: 'brand', orphanRemoval: true)]
+    private Collection $model;
 
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $countryOfManufacture = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $manufactureName = null;
+
+public function __tostring(): string
+{
+return $this->name.' '.$this->name;
+    
+}
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
     public function __construct()
     {
-        $this->models = new ArrayCollection();
+        $this->model = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,58 +48,18 @@ class Brand
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * @return Collection<int, Model>
+     */
+    public function getModel(): Collection
     {
-        return $this->Name;
-    }
-
-    public function setName(string $Name): static
-    {
-        $this->Name = $Name;
-
-        return $this;
-    }
-
-    public function getCountryOfManufacture(): ?string
-    {
-        return $this->CountryOfManufacture;
-    }
-
-    public function setCountryOfManufacture(string $CountryOfManufacture): static
-    {
-        $this->CountryOfManufacture = $CountryOfManufacture;
-
-        return $this;
-    }
-
-    public function getManufactureName(): ?string
-    {
-        return $this->ManufactureName;
-    }
-
-    public function setManufactureName(string $ManufactureName): static
-    {
-        $this->ManufactureName = $ManufactureName;
-
-        return $this;
-    }
-
-    public function getModels(): ?string
-    {
-        return $this->Models;
-    }
-
-    public function setModels(string $Models): static
-    {
-        $this->Models = $Models;
-
-        return $this;
+        return $this->model;
     }
 
     public function addModel(Model $model): static
     {
-        if (!$this->models->contains($model)) {
-            $this->models->add($model);
+        if (!$this->model->contains($model)) {
+            $this->model->add($model);
             $model->setBrand($this);
         }
 
@@ -107,12 +68,48 @@ class Brand
 
     public function removeModel(Model $model): static
     {
-        if ($this->models->removeElement($model)) {
+        if ($this->model->removeElement($model)) {
             // set the owning side to null (unless already changed)
             if ($model->getBrand() === $this) {
                 $model->setBrand(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCountryOfManufacture(): ?string
+    {
+        return $this->countryOfManufacture;
+    }
+
+    public function setCountryOfManufacture(string $countryOfManufacture): static
+    {
+        $this->countryOfManufacture = $countryOfManufacture;
+
+        return $this;
+    }
+
+    public function getManufactureName(): ?string
+    {
+        return $this->manufactureName;
+    }
+
+    public function setManufactureName(string $manufactureName): static
+    {
+        $this->manufactureName = $manufactureName;
 
         return $this;
     }

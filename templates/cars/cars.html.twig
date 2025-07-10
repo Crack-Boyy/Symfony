@@ -9,10 +9,19 @@
 {% for model in models %}
     <div class="col-md-4 d-flex justify-content-center mb-4">
         <div class="card" style="width: 18rem;">
-            <img src="{{model.brand.image}}" class="card-img-top" alt="Yamaha logo">
+
+{% if model.brand.image starts with 'http' %}
+        <img src="{{model.brand.image}}" class="card-img-top" alt="Yamaha logo">
+    {% else %}
+        <img src="{{asset('images/brand/' ~ model.brand.image)}}" alt ="logo brand">
+{% endif %}
+
+
+            
+            
             <div class="card-body">
                 <h2 class="card-title">{{model.brand.name}} {{model.name}}</h2>
-                <h5>{{model.brand.manufacturerName}}, {{model.brand.countryOfManufacture}}</h5>
+                <h5>{{model.brand.manufactureName}}, {{model.brand.countryOfManufacture}}</h5>
                 <h5>{{model.serialNumber}}</h5>
                 <h5>{{model.dateOfManufacture | date('d/m/Y')}}</h5>
             </div>
@@ -21,6 +30,7 @@
 {% endfor %}
 </div>
 {% endfor %}
+<div class="d-flex  justify-content-center mt-4">
 {{ knp_pagination_render(models) }}
 </div>
 {% endblock %}

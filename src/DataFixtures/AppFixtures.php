@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Model;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use \DateTime;
+use DateTime;
 use App\Entity\Brand;
 
 class AppFixtures extends Fixture
